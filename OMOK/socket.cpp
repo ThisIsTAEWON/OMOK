@@ -124,7 +124,7 @@ void set_opp_adr() {
 
 	memset(&opp_adr, 0, sizeof(opp_adr));
 	opp_adr.sin_family = PF_INET;
-	opp_adr.sin_addr.s_addr = inet_addr("119.198.167.223");
+	opp_adr.sin_addr.s_addr = inet_addr(HOST_IP);
 	opp_adr.sin_port = htons(100);
 }
 

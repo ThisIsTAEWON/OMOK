@@ -2,6 +2,7 @@
 #pragma once
 using namespace std;
 
+#define HOST_IP "119.198.167.223"
 #define BUF_SIZE 1024
 
 void socket_start_routine();
