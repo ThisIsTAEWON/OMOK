@@ -81,11 +81,8 @@ string recv_msg() {
 		error_handling("recv() error");
 
 	char* msg_type = strtok(msg, "/");
-	char* tmp = strtok(NULL, " ");
-	cout << msg_type << "\n"<<tmp;
-	if (strcmp(msg_type, "flag")) {
-		return tmp;
-	}
+	if (strcmp(msg_type, "flag"))
+		return strtok(NULL, " ");
 	else if (strcmp(msg_type, "point"))
 		return "point";
 
