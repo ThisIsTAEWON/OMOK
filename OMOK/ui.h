@@ -3,3 +3,4 @@
 
 void start_routine();
 void win();
+void lose();

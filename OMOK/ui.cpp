@@ -126,6 +126,19 @@ void win() {
     start_routine();
 }
 
+void lose() {
+
+    system("cls");
+    char buf[SIZE];
+    char t;
+    FILE* fp = fopen("you_lose.txt", "r");
+    while (fgets(buf, SIZE, fp) != NULL)
+        cout << buf;
+    cout << "\n		Enter to restart.";
+    cin.get(t);
+    start_routine();
+}
+
 void print_rules() {
 
     char buf[SIZE];

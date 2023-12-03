@@ -82,7 +82,7 @@ void handle_board() {
     p->y = HEIGHT / 2;
     string tmp = board[p->y][p->x];
 
-    if (my_turn == turn) {
+    if (my_turn == BLACK) {
         board[p->y][p->x] = CURSOR;
         print_board(WIDTH, HEIGHT);
         while (1) {
@@ -179,7 +179,7 @@ void move(point* p, int dir) {
 void init_point(point* p) {
 
     point tmp;
-    for (int y = p->y + 1; y < HEIGHT; y++) {
+    for (int y = p->y; y < HEIGHT; y++) {
         for (int x = p->x + 1; x < WIDTH; x++) {
             tmp.x = x;
             tmp.y = y;
@@ -191,7 +191,7 @@ void init_point(point* p) {
         }
     }
 
-    for (int y = p->y - 1; y >= 0; y--) {
+    for (int y = p->y; y >= 0; y--) {
         for (int x = p->x - 1; x >= 0; x--) {
             tmp.x = x;
             tmp.y = y;
@@ -230,7 +230,10 @@ void five_in_a_row(point p) {
             Sleep(500);
             print_board(WIDTH, HEIGHT);
         }
-        win();
+        if (turn == my_turn)
+            win();
+        else
+            lose();
     }
 }
 
