@@ -143,7 +143,7 @@ void print_rules() {
 
     char buf[SIZE];
     system("cls");
-    FILE* fp = fopen("rule_book.txt", "r");
+    FILE* fp = fopen("rule.txt", "r");
     while (fgets(buf, SIZE, fp) != NULL)
         cout << buf;
     cout << "\n		Press any key to quit.";
