@@ -14,7 +14,7 @@ void print_rules();
 void start_routine() {
 
     // 콘솔 제목 변경
-    SetConsoleTitle((LPCWSTR)"OMOK");
+    SetConsoleTitle(TEXT("OMOK"));
     handle_menu();
 }
 
@@ -52,9 +52,6 @@ void join_match() {
     request_connect();
 
     string* msg = recv_msg();
-    /*cout << "ui.cpp\n";
-    for (int i = 0; i < 3; i++)
-        cout << msg[i] << "\n";*/
     if (strcmp(msg[0].c_str(), "flag") != 0) error_handling("join_match() error");
     
     string my_turn;
@@ -80,7 +77,7 @@ void handle_menu() {
         if (i == cursor) cout << "                      -" << menu[i] << "-\n";
         else cout << "                       " << menu[i] << "\n";
     }
-    cout << "\n		Press a to enter.";
+    cout << "\n		    Press a to enter.";
 
     while (1) {        
         if (_kbhit()) {
@@ -108,7 +105,7 @@ void handle_menu() {
                 if (i == cursor) cout << "                      -" << menu[i] << "-\n";
                 else cout << "                       " << menu[i] << "\n";
             }
-            cout << "\n		Press a to enter.";
+            cout << "\n		    Press a to enter.";
         }
     }
 }

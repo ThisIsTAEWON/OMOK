@@ -18,7 +18,7 @@ void handle_opp_turn(point* p);
 
 bool on_board(point p);
 bool is_placeable(point p);
-void move(point* p, int dir);
+void move(point* p, int dir); // 통과 되게 수정
 void init_point(point* p); // 수정
 void five_in_a_row(point p);
 bool is_double_three(point p);

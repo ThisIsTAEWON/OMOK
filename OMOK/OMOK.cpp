@@ -7,8 +7,6 @@ using namespace std;
 int main(void) {
 
     start_routine();
-    /*init_board(20, 12);
-    cursor();*/
 
     return 0;
 }
