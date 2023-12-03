@@ -102,8 +102,8 @@ void handle_board() {
 void handle_my_turn(point* p, string tmp) {
 
     while (1) {
-        board[p->y][p->x] = tmp;
         if (_kbhit()) {
+            board[p->y][p->x] = tmp;
             int dir = _getch();
             if (dir == 'a') {
                 board[p->y][p->x] = turn;
@@ -114,17 +114,18 @@ void handle_my_turn(point* p, string tmp) {
                 if (turn == BLACK) turn = WHITE;
                 else if (turn == WHITE) turn = BLACK;
 
-                init_point(p);
+                system("cls");
+                print_board(WIDTH, HEIGHT);
                 break;
             }
             else if (dir == 224) {
                 dir = _getch();
                 move(p, dir);
+                tmp = board[p->y][p->x];
+                board[p->y][p->x] = CURSOR;
+                system("cls");
+                print_board(WIDTH, HEIGHT);
             }
-            tmp = board[p->y][p->x];
-            board[p->y][p->x] = CURSOR;
-            system("cls");
-            print_board(WIDTH, HEIGHT);
         }
     }
 }
@@ -141,6 +142,10 @@ void handle_opp_turn(point* p) {
         p->y = stoi(msg[2]);
         board[p->y][p->x] = turn;
         five_in_a_row(*p);
+        init_point(p);
+        board[p->y][p->x] = CURSOR;
+        system("cls");
+        print_board(WIDTH, HEIGHT);
     }
 }
 

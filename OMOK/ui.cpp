@@ -52,9 +52,9 @@ void join_match() {
     request_connect();
 
     string* msg = recv_msg();
-    cout << "ui.cpp\n";
+    /*cout << "ui.cpp\n";
     for (int i = 0; i < 3; i++)
-        cout << msg[i] << "\n";
+        cout << msg[i] << "\n";*/
     if (strcmp(msg[0].c_str(), "flag") != 0) error_handling("join_match() error");
     
     string my_turn;

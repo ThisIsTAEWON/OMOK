@@ -63,12 +63,13 @@ void send_msg(string msg_type, string payload) {
 void send_msg(string msg_type, point payload) {
 
 	char msg[BUF_SIZE] = "\0";
-	strcat(msg, msg_type.c_str());
-	strcat(msg, "/");
-	strcat(msg, (const char*)payload.x);
-	strcat(msg, ",");
-	strcat(msg, (const char*)payload.y);
-	strcat(msg, "\0");
+	sprintf(msg, "%s/%d,%d", msg_type.c_str(), payload.x, payload.y);
+	//strcat(msg, msg_type.c_str());
+	//strcat(msg, "/");
+	//strcat(msg, (char*)payload.x);
+	//strcat(msg, ",");
+	//strcat(msg, (char*)payload.y);
+	//strcat(msg, "\0");
 
 	send(opp_sock, msg, strlen(msg), 0);
 }
@@ -93,10 +94,6 @@ string* recv_msg() {
 	else {
 		parse[0] = "error";
 	}
-
-	cout<<"sock.cpp\n";
-	for (int i = 0; i < 3; i++)
-		cout << parse[i] << "\n";
 
 	return parse;
 }
