@@ -50,7 +50,7 @@ void join_match() {
     cout << "Joining match...\n";
     request_connect();
 
-    string init_turn = recv_msg();
+    string init_turn(recv_msg());
     init_board(WIDTH, HEIGHT, init_turn);
 
     system("cls");

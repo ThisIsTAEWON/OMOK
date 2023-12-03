@@ -7,6 +7,6 @@ using namespace std;
 void socket_start_routine();
 void request_connect();
 void response_connect();
-void send_msg(string flag, string payload);
-void send_msg(string flag, point payload);
+void send_msg(string msg_type, string payload);
+void send_msg(string msg_type, point payload);
 string recv_msg();

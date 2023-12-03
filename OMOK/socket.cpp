@@ -49,10 +49,10 @@ void response_connect() {
 	accept_socket();
 }
 
-void send_msg(string flag, string payload) {
+void send_msg(string msg_type, string payload) {
 
 	char msg[BUF_SIZE] = "\0";
-	strcat(msg, flag.c_str());
+	strcat(msg, msg_type.c_str());
 	strcat(msg, "/");
 	strcat(msg, payload.c_str());
 	strcat(msg, "\0");
@@ -60,10 +60,10 @@ void send_msg(string flag, string payload) {
 	send(opp_sock, msg, strlen(msg), 0);
 }
 
-void send_msg(string flag, point payload) {
+void send_msg(string msg_type, point payload) {
 
 	char msg[BUF_SIZE] = "\0";
-	strcat(msg, flag.c_str());
+	strcat(msg, msg_type.c_str());
 	strcat(msg, "/");
 	strcat(msg, (const char*)payload.x);
 	strcat(msg, ",");
@@ -76,14 +76,20 @@ void send_msg(string flag, point payload) {
 string recv_msg() {
 
 	char msg[BUF_SIZE];
+	memset(msg, 0, BUF_SIZE);
 	if (recv(opp_sock, msg, BUF_SIZE - 1, 0) == -1)
 		error_handling("recv() error");
 
 	char* msg_type = strtok(msg, "/");
-	if (msg_type == "flag")
-		return msg;
-	else if (msg_type == "point")
+	char* tmp = strtok(NULL, " ");
+	cout << msg_type << "\n"<<tmp;
+	if (strcmp(msg_type, "flag")) {
+		return tmp;
+	}
+	else if (strcmp(msg_type, "point"))
 		return "point";
+
+	error_handling("recv_msg() error");
 }
 
 void open_my_socket() {
@@ -112,7 +118,7 @@ void set_opp_adr() {
 
 	memset(&opp_adr, 0, sizeof(opp_adr));
 	opp_adr.sin_family = PF_INET;
-	opp_adr.sin_addr.s_addr = inet_addr("168.126.63.1");
+	opp_adr.sin_addr.s_addr = inet_addr("119.198.167.223");
 	opp_adr.sin_port = htons(100);
 }
 
