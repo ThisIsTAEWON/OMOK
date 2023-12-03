@@ -76,24 +76,28 @@ void send_msg(string msg_type, point payload) {
 string* recv_msg() {
 
 	char msg[BUF_SIZE];
-	string parse[3];
+	string* parse = new string[3];
 	memset(msg, 0, BUF_SIZE);
 	if (recv(opp_sock, msg, BUF_SIZE - 1, 0) == -1)
 		error_handling("recv() error");
 
 	char* msg_type = strtok(msg, "/");
-	parse[0] = msg_type;
-	if (strcmp(msg_type, "flag")) {
-		parse[1] = strtok(NULL, " ");
+	parse[0] = _strdup(msg_type);
+	if (strcmp(msg_type, "flag") == 0) {
+		parse[1] = _strdup(strtok(NULL, " "));
 	}
-	else if (strcmp(msg_type, "point")) {
-		parse[1] = strtok(NULL, ",");
-		parse[2] = strtok(NULL, " ");
+	else if (strcmp(msg_type, "point") == 0) {
+		parse[1] = _strdup(strtok(NULL, ","));
+		parse[2] = _strdup(strtok(NULL, " "));
 	}
 	else {
 		parse[0] = "error";
 	}
-	
+
+	cout<<"sock.cpp\n";
+	for (int i = 0; i < 3; i++)
+		cout << parse[i] << "\n";
+
 	return parse;
 }
 

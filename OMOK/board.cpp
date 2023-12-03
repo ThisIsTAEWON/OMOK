@@ -13,6 +13,9 @@ string board[100][100];
 string my_turn;
 string turn;
 
+void handle_my_turn(point* p, string tmp);
+void handle_opp_turn(point* p);
+
 bool on_board(point p);
 bool is_placeable(point p);
 void move(point* p, int dir);
@@ -74,7 +77,7 @@ void print_board(int width, int height) {
 
 void handle_board() {
 
-    point* p;
+    point* p = new point;
     p->x = WIDTH / 2;
     p->y = HEIGHT / 2;
     string tmp = board[p->y][p->x];

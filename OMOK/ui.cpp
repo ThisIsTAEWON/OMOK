@@ -51,9 +51,11 @@ void join_match() {
     cout << "Joining match...\n";
     request_connect();
 
-
     string* msg = recv_msg();
-    if (msg[0] != "flag") error_handling("join_match() error");
+    cout << "ui.cpp\n";
+    for (int i = 0; i < 3; i++)
+        cout << msg[i] << "\n";
+    if (strcmp(msg[0].c_str(), "flag") != 0) error_handling("join_match() error");
     
     string my_turn;
     if (msg[1] == BLACK) my_turn = WHITE;
