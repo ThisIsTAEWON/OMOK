@@ -11,7 +11,8 @@
 using namespace std;
 
 void error_handling(const char* message);
-void open_socket();
+void open_my_socket();
+void open_opp_socket();
 void set_my_adr();
 void set_opp_adr();
 void bind_and_listen_socket();
@@ -31,18 +32,18 @@ void socket_start_routine() {
 
 	if (WSAStartup(0x0202, &wsaData) != 0)
 		error_handling("WSAStartup() error");
-
-	open_socket();
 }
 
 void request_connect() {
 
+	open_opp_socket();
 	set_opp_adr();
 	connect_socket();
 }
 
 void response_connect() {
 
+	open_my_socket();
 	set_my_adr();
 	bind_and_listen_socket();
 	accept_socket();
@@ -85,10 +86,17 @@ string recv_msg() {
 		return "point";
 }
 
-void open_socket() {
+void open_my_socket() {
 
 	my_sock = socket(PF_INET, SOCK_STREAM, 0);
 	if (my_sock == -1)
+		error_handling("socket() error");
+}
+
+void open_opp_socket() {
+
+	opp_sock = socket(PF_INET, SOCK_STREAM, 0);
+	if (opp_sock == -1)
 		error_handling("socket() error");
 }
 
@@ -104,17 +112,17 @@ void set_opp_adr() {
 
 	memset(&opp_adr, 0, sizeof(opp_adr));
 	opp_adr.sin_family = PF_INET;
-	opp_adr.sin_addr.s_addr = htonl(INADDR_ANY);
-	opp_adr.sin_port = htons(101);
+	opp_adr.sin_addr.s_addr = inet_addr("168.126.63.1");
+	opp_adr.sin_port = htons(100);
 }
 
 void bind_and_listen_socket() {
 
+	opp_adr_sz = sizeof(opp_adr);
 	if (bind(my_sock, (struct sockaddr*)&my_adr, sizeof(my_adr)) == -1)
 		error_handling("bind() error");
 	if (listen(my_sock, 5) == -1)
 		error_handling("listen() error");
-	opp_adr_sz = sizeof(opp_adr);
 }
 
 void connect_socket() {
@@ -126,10 +134,7 @@ void connect_socket() {
 void accept_socket() {
 
 	opp_sock = accept(my_sock, (struct sockaddr*)&opp_adr, &opp_adr_sz);
-	if (opp_sock == -1)
-		error_handling("accept() error");
-	else
-		cout << "Client connected at: " << inet_ntoa(opp_adr.sin_addr) << ":" << ntohs(opp_adr.sin_port) << "\n";
+	if (opp_sock == -1) error_handling("accept() error");
 }
 
 void error_handling(const char* message) {
