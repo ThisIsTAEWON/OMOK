@@ -178,11 +178,14 @@ void move(point* p, int dir) {
 
 void init_point(point* p) {
 
+    point tmp;
     for (int y = p->y + 1; y < HEIGHT; y++) {
         for (int x = p->x + 1; x < WIDTH; x++) {
-            if (is_placeable(*p)) {
-                p->x = x;
-                p->y = y;
+            tmp.x = x;
+            tmp.y = y;
+            if (is_placeable(tmp)) {
+                p->x = tmp.x;
+                p->y = tmp.y;
                 return;
             }
         }
@@ -190,9 +193,11 @@ void init_point(point* p) {
 
     for (int y = p->y - 1; y >= 0; y--) {
         for (int x = p->x - 1; x >= 0; x--) {
-            if (is_placeable(*p)) {
-                p->x = x;
-                p->y = y;
+            tmp.x = x;
+            tmp.y = y;
+            if (is_placeable(tmp)) {
+                p->x = tmp.x;
+                p->y = tmp.y;
                 return;
             }
         }
