@@ -1,13 +1,22 @@
 #define _CRT_SECURE_NO_WARNINGS
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
-#pragma comment(lib, "ws2_32");
+#pragma comment(lib, "ws2_32")
 #include <iostream>
+#include <string>
 #include <io.h>
 #include <WinSock2.h>
+#include "socket.h"
+#include "board.h"
 
-#define BUF_SIZE 1024
+using namespace std;
 
 void error_handling(const char* message);
+void open_socket();
+void set_my_adr();
+void set_opp_adr();
+void bind_and_listen_socket();
+void connect_socket();
+void accept_socket();
 
 struct sockaddr_in;
 
@@ -15,9 +24,6 @@ int my_sock, opp_sock;
 struct sockaddr_in my_adr;
 struct sockaddr_in opp_adr;
 int opp_adr_sz;
-
-char message[BUF_SIZE];
-char buffer[BUF_SIZE];
 
 WSADATA wsaData;
 
@@ -38,18 +44,56 @@ void request_connect() {
 void response_connect() {
 
 	set_my_adr();
+	bind_and_listen_socket();
 	accept_socket();
 }
 
+void send_msg(string flag, string payload) {
+
+	char msg[BUF_SIZE] = "\0";
+	strcat(msg, flag.c_str());
+	strcat(msg, "/");
+	strcat(msg, payload.c_str());
+	strcat(msg, "\0");
+
+	send(opp_sock, msg, strlen(msg), 0);
+}
+
+void send_msg(string flag, point payload) {
+
+	char msg[BUF_SIZE] = "\0";
+	strcat(msg, flag.c_str());
+	strcat(msg, "/");
+	strcat(msg, (const char*)payload.x);
+	strcat(msg, ",");
+	strcat(msg, (const char*)payload.y);
+	strcat(msg, "\0");
+
+	send(opp_sock, msg, strlen(msg), 0);
+}
+
+string recv_msg() {
+
+	char msg[BUF_SIZE];
+	if (recv(opp_sock, msg, BUF_SIZE - 1, 0) == -1)
+		error_handling("recv() error");
+
+	char* msg_type = strtok(msg, "/");
+	if (msg_type == "flag")
+		return msg;
+	else if (msg_type == "point")
+		return "point";
+}
+
 void open_socket() {
-	
+
 	my_sock = socket(PF_INET, SOCK_STREAM, 0);
 	if (my_sock == -1)
 		error_handling("socket() error");
 }
 
 void set_my_adr() {
-	
+
 	memset(&my_adr, 0, sizeof(my_adr));
 	my_adr.sin_family = PF_INET;
 	my_adr.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -85,7 +129,7 @@ void accept_socket() {
 	if (opp_sock == -1)
 		error_handling("accept() error");
 	else
-		cout << "Client connected at: " << inet_ntoa(opp_adr.sin_addr) << ":" << ntohs(opp_adr.sin_port)) << "\n";
+		cout << "Client connected at: " << inet_ntoa(opp_adr.sin_addr) << ":" << ntohs(opp_adr.sin_port) << "\n";
 }
 
 void error_handling(const char* message) {

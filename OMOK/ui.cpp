@@ -5,6 +5,7 @@
 #include <conio.h> // kbhit(), chget()
 #include "ui.h"
 #include "board.h"
+#include "socket.h"
 using namespace std;
 
 void handle_menu();
@@ -27,15 +28,44 @@ void print_logo() {
     fclose(fp);
 }
 
+void open_match() {
+
+    socket_start_routine();
+    system("cls");
+    cout << "Opening match...\n";
+    response_connect();
+
+    string turn = init_turn();
+    init_board(WIDTH, HEIGHT, turn);
+    send_msg("flag", turn);
+    
+    system("cls");
+    handle_board();
+}
+
+void join_match() {
+
+    socket_start_routine();
+    system("cls");
+    cout << "Joining match...\n";
+    request_connect();
+
+    string init_turn = recv_msg();
+    init_board(WIDTH, HEIGHT, init_turn);
+
+    system("cls");
+    handle_board();
+}
+
 void handle_menu() {
 
-    string menu[3] = { "Play", "Rules", "Exit" };
-    for(int i=0;i<3;i++) cout << "\n		" << menu[i];
+    string menu[4] = { "Open Match", "Join Match", "Rules", "Exit" };
+    for(int i=0;i<4;i++) cout << "\n		" << menu[i];
     int cursor = 0;
 
     system("cls");
     print_logo();
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 4; i++) {
         if (i == cursor) cout << "                      -" << menu[i] << "-\n";
         else cout << "                       " << menu[i] << "\n";
     }
@@ -48,23 +78,22 @@ void handle_menu() {
                 command = _getch();
                 if (command == 72 && cursor > 0)
                     cursor--;
-                else if (command == 80 && cursor < 2)
+                else if (command == 80 && cursor < 3)
                     cursor++;
             }
             else if (command == 'a') {
-                if (cursor == 0) {
-                    system("cls");
-                    init_board(20, 12);
-                    handle_board();
-                }
+                if (cursor == 0)
+                    open_match();
                 else if (cursor == 1)
-                    print_rules();
+                    join_match();
                 else if (cursor == 2)
+                    print_rules();
+                else if (cursor == 3)
                     exit(0);
             }
             system("cls");
             print_logo();
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 4; i++) {
                 if (i == cursor) cout << "                      -" << menu[i] << "-\n";
                 else cout << "                       " << menu[i] << "\n";
             }

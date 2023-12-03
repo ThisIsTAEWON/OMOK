@@ -129,10 +129,12 @@
   <ItemGroup>
     <ClCompile Include="board.cpp" />
     <ClCompile Include="OMOK.cpp" />
+    <ClCompile Include="socket.cpp" />
     <ClCompile Include="ui.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="board.h" />
+    <ClInclude Include="socket.h" />
     <ClInclude Include="ui.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

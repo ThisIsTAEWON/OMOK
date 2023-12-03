@@ -1,1 +1,12 @@
+#include "board.h"
 #pragma once
+using namespace std;
+
+#define BUF_SIZE 1024
+
+void socket_start_routine();
+void request_connect();
+void response_connect();
+void send_msg(string flag, string payload);
+void send_msg(string flag, point payload);
+string recv_msg();

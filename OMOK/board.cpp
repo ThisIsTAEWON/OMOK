@@ -1,15 +1,13 @@
 #include <iostream>
 #include <string>
-#include <vector>
+#include <cstdlib>
+#include <ctime>
 #include <Windows.h>
 #include <conio.h> // kbhit(), chget()
 #include "board.h"
 #include "ui.h"
 #include "socket.h"
 using namespace std;
-
-#define WIDTH 20
-#define HEIGHT 12
 
 string board[100][100];
 string turn;
@@ -26,9 +24,9 @@ bool is_serial_increase(point p, int length);
 bool is_serial_decrease(point p, int length);
 int* set_offset(int dir);
 
-void init_board(int width, int height) {
+void init_board(int width, int height, string init_turn) {
 
-    turn = BLACK;
+    turn = init_turn;
 
     board[0][0] = "¦£";
     for (int x = 1; x < width - 1; x++)
@@ -46,6 +44,15 @@ void init_board(int width, int height) {
     for (int x = 1; x < width - 1; x++)
         board[height - 1][x] = "¦ª";
     board[height - 1][width - 1] = "¦¥";
+}
+
+string init_turn() {
+
+    srand((unsigned int)time(NULL));
+    int rand_num = rand() % 2;
+
+    if (rand_num == 0) return BLACK;
+    else return WHITE;
 }
 
 void print_board(int width, int height) {
@@ -77,10 +84,10 @@ void handle_board() {
 
                 if (five_in_a_row(p)) {
                     for (int i = 0; i < 3; i++) {
+                        Sleep(500);
                         system("cls");
                         Sleep(500);
                         print_board(WIDTH, HEIGHT);
-                        Sleep(500);
                     }
                     win();
                 }
