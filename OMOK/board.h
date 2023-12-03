@@ -1,3 +1,4 @@
+using namespace std;
 #pragma once
 
 #define BLACK "¡Ü"
@@ -11,7 +12,8 @@ typedef struct{
 	int x, y;
 } point;
 
-void init_board(int width, int height, std::string init_turn);
+void init_board(int width, int height, string init_turn);
 void print_board(int width, int height);
 void handle_board();
-std::string init_turn();
+string init_turn();
+void set_my_turn(string turn);

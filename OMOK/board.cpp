@@ -10,13 +10,14 @@
 using namespace std;
 
 string board[100][100];
+string my_turn;
 string turn;
 
 bool on_board(point p);
 bool is_placeable(point p);
-point move(point p, int dir);
+void move(point* p, int dir);
 void init_point(point* p); // 수정
-bool five_in_a_row(point p);
+void five_in_a_row(point p);
 bool is_double_three(point p);
 bool is_serial_horizontal(point p, int length);
 bool is_serial_vertical(point p, int length);
@@ -55,6 +56,11 @@ string init_turn() {
     else return WHITE;
 }
 
+void set_my_turn(string turn) {
+
+    my_turn = turn;
+}
+
 void print_board(int width, int height) {
 
     for (int i = 0; i < height; i++) {
@@ -68,65 +74,94 @@ void print_board(int width, int height) {
 
 void handle_board() {
 
-    point p;
-    p.x = WIDTH / 2;
-    p.y = HEIGHT / 2;
-    string tmp = board[p.y][p.x];
-    board[p.y][p.x] = CURSOR;
-    print_board(WIDTH, HEIGHT);
+    point* p;
+    p->x = WIDTH / 2;
+    p->y = HEIGHT / 2;
+    string tmp = board[p->y][p->x];
+
+    if (my_turn == turn) {
+        board[p->y][p->x] = CURSOR;
+        print_board(WIDTH, HEIGHT);
+        while (1) {
+            handle_my_turn(p, tmp);
+            handle_opp_turn(p);
+        }
+    }
+    else {
+        print_board(WIDTH, HEIGHT);
+        while (1) {
+            handle_opp_turn(p);
+            handle_my_turn(p, tmp);
+        }
+    }
+}
+
+void handle_my_turn(point* p, string tmp) {
 
     while (1) {
-        board[p.y][p.x] = tmp;
+        board[p->y][p->x] = tmp;
         if (_kbhit()) {
             int dir = _getch();
             if (dir == 'a') {
-                board[p.y][p.x] = turn;
-
-                if (five_in_a_row(p)) {
-                    for (int i = 0; i < 3; i++) {
-                        Sleep(500);
-                        system("cls");
-                        Sleep(500);
-                        print_board(WIDTH, HEIGHT);
-                    }
-                    win();
-                }
-                if (is_double_three(p)) continue;
+                board[p->y][p->x] = turn;
+                send_msg("point", *p);
+                five_in_a_row(*p);
+                //if (is_double_three(p)) continue;
 
                 if (turn == BLACK) turn = WHITE;
-                else turn = BLACK;
+                else if (turn == WHITE) turn = BLACK;
 
-                init_point(&p);
+                init_point(p);
+                break;
             }
             else if (dir == 224) {
                 dir = _getch();
-                p = move(p, dir);
+                move(p, dir);
             }
-            tmp = board[p.y][p.x];
-            board[p.y][p.x] = CURSOR;
+            tmp = board[p->y][p->x];
+            board[p->y][p->x] = CURSOR;
             system("cls");
             print_board(WIDTH, HEIGHT);
         }
     }
 }
 
-point move(point p, int dir) {
+void handle_opp_turn(point* p) {
+    
+    string* msg = recv_msg();
+    if (msg[0] == "error")
+        error_handling("opp_turn() error");
+    else if (msg[0] == "flag")
+        cout << "flag!\n"; // timeout 등 추가 기능
+    else if (msg[0] == "point") {
+        p->x = stoi(msg[1]);
+        p->y = stoi(msg[2]);
+        board[p->y][p->x] = turn;
+        five_in_a_row(*p);
+    }
+}
 
-    point tmp = p;
+void move(point* p, int dir) {
+
+    point tmp = *p;
     int* offset = set_offset(dir);
-    p.x += offset[0];
-    p.y += offset[1];
-    if (!on_board(p))
-        return tmp;
-
-    while (!is_placeable(p)) {
-        p.x += offset[0];
-        p.y += offset[1];
-        if (!on_board(p))
-            return tmp;
+    p->x += offset[0];
+    p->y += offset[1];
+    if (!on_board(*p)) {
+        p->x = tmp.x;
+        p->y = tmp.y;
+        return;
     }
 
-    return p;
+    while (!is_placeable(*p)) {
+        p->x += offset[0];
+        p->y += offset[1];
+        if (!on_board(*p)) {
+            p->x = tmp.x;
+            p->y = tmp.y;
+            return;
+        }
+    }
 }
 
 void init_point(point* p) {
@@ -166,14 +201,20 @@ bool is_placeable(point p) {
     return false;
 }
 
-bool five_in_a_row(point p) {
+void five_in_a_row(point p) {
 
-    if (is_serial_horizontal(p, 5)) return true;
-    if (is_serial_vertical(p, 5)) return true;
-    if (is_serial_increase(p, 5)) return true;
-    if (is_serial_decrease(p, 5)) return true;
-    
-    return false;
+    if (is_serial_horizontal(p, 5)
+        || is_serial_vertical(p, 5)
+        || is_serial_increase(p, 5)
+        || is_serial_decrease(p, 5)) {
+        for (int i = 0; i < 3; i++) {
+            Sleep(500);
+            system("cls");
+            Sleep(500);
+            print_board(WIDTH, HEIGHT);
+        }
+        win();
+    }
 }
 
 bool is_double_three(point p) {

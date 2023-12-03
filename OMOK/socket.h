@@ -9,4 +9,5 @@ void request_connect();
 void response_connect();
 void send_msg(string msg_type, string payload);
 void send_msg(string msg_type, point payload);
-string recv_msg();
+string* recv_msg();
+void error_handling(const char* message);

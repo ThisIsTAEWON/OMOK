@@ -36,6 +36,7 @@ void open_match() {
     response_connect();
 
     string turn = init_turn();
+    set_my_turn(turn);
     init_board(WIDTH, HEIGHT, turn);
     send_msg("flag", turn);
     
@@ -50,8 +51,16 @@ void join_match() {
     cout << "Joining match...\n";
     request_connect();
 
-    string init_turn(recv_msg());
-    init_board(WIDTH, HEIGHT, init_turn);
+
+    string* msg = recv_msg();
+    if (msg[0] != "flag") error_handling("join_match() error");
+    
+    string my_turn;
+    if (msg[1] == BLACK) my_turn = WHITE;
+    else if (msg[1] == WHITE) my_turn = BLACK;
+
+    set_my_turn(my_turn);
+    init_board(WIDTH, HEIGHT, msg[1]); // msg[1]ดย payload
 
     system("cls");
     handle_board();
