@@ -142,6 +142,10 @@ void handle_opp_turn(point* p) {
         p->y = stoi(msg[2]);
         board[p->y][p->x] = turn;
         five_in_a_row(*p);
+
+        if (turn == BLACK) turn = WHITE;
+        else if (turn == WHITE) turn = BLACK;
+
         init_point(p);
         board[p->y][p->x] = CURSOR;
         system("cls");
