@@ -166,6 +166,7 @@ void move(point* p, int dir) {
     }
 
     while (!is_placeable(*p)) {
+        offset = set_offset(dir);
         p->x += offset[0];
         p->y += offset[1];
         if (!on_board(*p)) {
