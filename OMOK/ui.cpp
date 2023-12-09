@@ -18,6 +18,7 @@ void start_routine() {
     handle_menu();
 }
 
+// 로고 출력
 void print_logo() {
 
     char buf[SIZE];
@@ -35,6 +36,8 @@ void open_match() {
     cout << "Opening match...\n";
     response_connect();
 
+    // 호스트 측에서 기물 색 결정
+    // 상대에게 flag 타입의 메세지로 기물 색 정보 송신
     string turn = init_turn();
     set_my_turn(turn);
     init_board(WIDTH, HEIGHT, turn);
@@ -51,9 +54,11 @@ void join_match() {
     cout << "Joining match...\n";
     request_connect();
 
+    // 호스트가 보낸 기물 색 정보를 담은 메세지 수신
     string* msg = recv_msg();
     if (strcmp(msg[0].c_str(), "flag") != 0) error_handling("join_match() error");
     
+    // 수신한 정보 기반으로 기물 색 결정
     string my_turn;
     if (msg[1] == BLACK) my_turn = WHITE;
     else if (msg[1] == WHITE) my_turn = BLACK;
@@ -65,6 +70,7 @@ void join_match() {
     handle_board();
 }
 
+// 메뉴화면 출력
 void handle_menu() {
 
     string menu[4] = { "Open Match", "Join Match", "Rules", "Exit" };
@@ -110,6 +116,7 @@ void handle_menu() {
     }
 }
 
+// 승리시 화면 출력
 void win() {
 
     system("cls");
@@ -118,11 +125,12 @@ void win() {
     FILE* fp = fopen("you_win.txt", "r");
     while (fgets(buf, SIZE, fp) != NULL)
         cout << buf;
-    cout << "\n		Enter to restart.";
-    cin.get(t);
+    cout << "\n		Press any key to restart.";
+    t = _getch();
     start_routine();
 }
 
+// 패배시 화면 출력
 void lose() {
 
     system("cls");
@@ -131,19 +139,20 @@ void lose() {
     FILE* fp = fopen("you_lose.txt", "r");
     while (fgets(buf, SIZE, fp) != NULL)
         cout << buf;
-    cout << "\n		Enter to restart.";
-    cin.get(t);
+    cout << "\n		Press any key to restart.";
+    t = _getch();
     start_routine();
 }
 
+// 룰 출력
 void print_rules() {
 
     char buf[SIZE];
+    char t;
     system("cls");
     FILE* fp = fopen("rule.txt", "r");
     while (fgets(buf, SIZE, fp) != NULL)
         cout << buf;
     cout << "\n		Press any key to quit.";
-    char t;
     t = _getch();
 }

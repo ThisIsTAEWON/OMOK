@@ -28,12 +28,15 @@ int opp_adr_sz;
 
 WSADATA wsaData;
 
+// 소켓 초기화
 void socket_start_routine() {
 
 	if (WSAStartup(0x0202, &wsaData) != 0)
 		error_handling("WSAStartup() error");
 }
 
+// 매칭에 참가하는 유저
+// 소켓에 통신 요청을 보냄
 void request_connect() {
 
 	open_opp_socket();
@@ -41,6 +44,8 @@ void request_connect() {
 	connect_socket();
 }
 
+// 매칭을 생성하는 유저
+// 소켓에 요청된 연결을 수락함
 void response_connect() {
 
 	open_my_socket();
@@ -49,6 +54,8 @@ void response_connect() {
 	accept_socket();
 }
 
+// 인자로 받은 메세지 타입과 페이로드를 포맷화해서 전송
+// string 타입의 인자를 받음
 void send_msg(string msg_type, string payload) {
 
 	char msg[BUF_SIZE] = "\0";
@@ -60,6 +67,8 @@ void send_msg(string msg_type, string payload) {
 	send(opp_sock, msg, strlen(msg), 0);
 }
 
+// 인자로 받은 메세지 타입과 페이로드를 포맷화해서 전송
+// point 타입의 인자를 받음
 void send_msg(string msg_type, point payload) {
 
 	char msg[BUF_SIZE] = "\0";
@@ -68,6 +77,7 @@ void send_msg(string msg_type, point payload) {
 	send(opp_sock, msg, strlen(msg), 0);
 }
 
+// 메세지를 수신해서 파싱한 정보를 리턴
 string* recv_msg() {
 
 	char msg[BUF_SIZE];
@@ -75,17 +85,19 @@ string* recv_msg() {
 	memset(msg, 0, BUF_SIZE);
 	if (recv(opp_sock, msg, BUF_SIZE - 1, 0) == -1)
 		error_handling("recv() error");
-
+	
+	// 메세지 타입을 판별
 	char* msg_type = strtok(msg, "/");
 	parse[0] = _strdup(msg_type);
-	if (strcmp(msg_type, "flag") == 0) {
+
+	if (strcmp(msg_type, "flag") == 0) {	// 메세지 타입이 flag인 경우
 		parse[1] = _strdup(strtok(NULL, " "));
 	}
-	else if (strcmp(msg_type, "point") == 0) {
+	else if (strcmp(msg_type, "point") == 0) {	// 메세지 타입이 point인 경우
 		parse[1] = _strdup(strtok(NULL, ","));
 		parse[2] = _strdup(strtok(NULL, " "));
 	}
-	else {
+	else {	// 그 외의 경우는 error를 부여해서 예외처리
 		parse[0] = "error";
 	}
 
