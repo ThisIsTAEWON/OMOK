@@ -9,6 +9,7 @@
 #include "socket.h"
 using namespace std;
 
+
 string board[100][100];
 string my_turn;
 string turn;
@@ -18,8 +19,8 @@ void handle_opp_turn(point* p);
 
 bool on_board(point p);
 bool is_placeable(point p);
-void move(point* p, int dir); // 통과 되게 수정
-void init_point(point* p); // 수정
+void move(point* p, int dir);
+void init_point(point* p);
 void five_in_a_row(point p);
 bool is_double_three(point p);
 bool is_serial_horizontal(point p, int length);
@@ -102,6 +103,7 @@ void handle_board() {
 void handle_my_turn(point* p, string tmp) {
 
     while (1) {
+        if (t == 0) break;
         if (_kbhit()) {
             board[p->y][p->x] = tmp;
             int dir = _getch();
@@ -123,7 +125,9 @@ void handle_my_turn(point* p, string tmp) {
                 move(p, dir);
                 tmp = board[p->y][p->x];
                 board[p->y][p->x] = CURSOR;
+
                 system("cls");
+                //cout << "time: " << t << "\n";
                 print_board(WIDTH, HEIGHT);
             }
         }
@@ -149,6 +153,7 @@ void handle_opp_turn(point* p) {
         init_point(p);
         board[p->y][p->x] = CURSOR;
         system("cls");
+        //printf("time: %d\n", t);
         print_board(WIDTH, HEIGHT);
     }
 }
