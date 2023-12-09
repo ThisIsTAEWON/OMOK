@@ -103,7 +103,6 @@ void handle_board() {
 void handle_my_turn(point* p, string tmp) {
 
     while (1) {
-        if (t == 0) break;
         if (_kbhit()) {
             board[p->y][p->x] = tmp;
             int dir = _getch();
